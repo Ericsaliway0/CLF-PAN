@@ -1,50 +1,52 @@
-## Adaptive Chebyshev Graph Neural Network for Cancer Gene Prediction with Multi-Omics Integration
 
-This repository contains the code for our project,  
-**"Adaptive Chebyshev Graph Neural Network for Cancer Gene Prediction with Multi-Omics Integration,"**  
-submitted to the **13th International Conference on Intelligent Biology and Medicine (ICIBM 2025)**,  
-which will take place **August 10-12, 2025, in Columbus, OH, USA**.  
+## GKGL-PE: a GNN-based Knowledge Graph Learning framework for Pathway Embedding
 
-You can learn more about the conference here:  
-[ICIBM 2025](https://icibm2025.iaibm.org/)
+This repository contains the code for our paper, "GKGL-PE: A GNN-based Knowledge Graph Learning Framework for Pathway Embedding," published at the International Conference on Intelligent Biology and Medicine (ICIBM) 2024, held from October 10-12, 2024 in Houston, Texas, United States.
 
-![Alt text](images/__overview_framework.png)
+![Alt text](images/gkgl-pe_framework.png)
 
+## Data resources
+The different dataset and KG used in this project are located in data directory. These files include:
 
-## Data Source
+-) The data about pathways from https://reactome.org/download/current/ReactomePathways.txt, relationships between pathways from https://reactome.org/download/current/ReactomePathwaysRelation.txt and pathway-protein relations from https://reactome.org/download/current/NCBI2Reactome.txt on 24 March 2024.
 
-The dataset is obtained from the following sources:
+-) The built knowledge graph including pathway-pathway and pathway-protein relationships.
 
-- **[STRING database](https://string-db.org/cgi/download?sessionId=b7WYyccF6G1p)**  
-- **[HIPPIE: Human Integrated Protein-Protein Interaction rEference](https://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/download.php)**  
-- **[ConsensusPathDB (CPDB)](http://cpdb.molgen.mpg.de/CPDB)**  
+## Setup
 
-These databases provide curated and integrated protein-protein interaction (PPI) and pathway data for bioinformatics research.
+-) conda create -n gnn python=3.11 -y
 
+-) conda activate gnn 
 
-## Setup and Get Started
+-) conda install pytorch::pytorch torchvision torchaudio -c pytorch
 
-1. Install the required dependencies:
-   - `pip install -r requirements.txt`
+-) pip install pandas
 
-2. Activate your Conda environment:
-   - `conda activate gnn`
+-) pip install py2neo pandas matplotlib scikit-learn
 
-3. Install PyTorch:
-   - `conda install pytorch torchvision torchaudio -c pytorch`
+-) pip install tqdm
 
-4. Install the necessary Python packages:
-   - `pip install pandas`
-   - `pip install py2neo pandas matplotlib scikit-learn`
-   - `pip install tqdm`
-   - `pip install seaborn`
+-) conda install -c dglteam dgl
 
-5. Install DGL:
-   - `conda install -c dglteam dgl`
+-) pip install seaborn
 
-6. Download the data from the built gene association graph using the link below and place it in the `data/multiomics_meth/` directory before training:
-   - [Download Gene Association Data](https://drive.google.com/file/d/1l7mbTn2Nxsbc7LLLJzsT8y02scD23aWo/view?usp=sharing)
+## Get start
+## creating embedding
+python GKGL-PE/embedding_clustering/gat_embedding.py --in_feats 128 --out_feats 128 --num_layers 4 --num_heads 1 --batch_size 1 --lr 0.01 --num_epochs 200
+## link prediction
+python GKGL-PE/embedding_clustering/main.py --out-feats 128 --num-heads 4 --num-layers 6 --lr 0.02 --input-size 2 --hidden-size 16 --feat-drop 0.1 --attn-drop 0.1 --epochs 200
 
-7. To train the model, run the following command:
-   - `python main.py --model_type ACGNN --net_type CPDB --score_threshold 0.99 --learning_rate 0.001 --num_epochs 200`
+gene_pathway_embedding % python embedding/gat_embedding.py --in_feats 2 --hidden_feats 2 --out_feats 128 --num_layers 2  --lr 0.0001 --num_epochs 2002
+✅ Created network 'emb_train' with 6193 nodes and 2278939 edges
+Number of positives in network: 3251======================================++++++++++++++
+✅ Created network 'emb_test' with 2655 nodes and 440119 edges
+✅ Saved train/test DGL graphs to embedding/data/emb/raw
+Checking training graphs:==========================================================================================
+Graph 0 (unknown) has 3251 positives out of 6193 nodes
+Checking test graphs:
+Graph 0 (unknown) has 1388 positives out of 2655 nodes
+nx_graph.graph_nx.nodes===================== 6193
+cluster_labels_initial===================== 6193
+first_node_stId_in_cluster_initial-------------------------------
+ {19: 'ACIN1', 15: 'AKT1', 2: 'AKT2', 16: 'AKT3', 1: 'CARD8', 0: 'CYCS', 11: 'DYNLL2', 3: 'MAPK1', 12: 'PPP3R1', 18: 'TP53BP2', 4: 'XIAP', 17: 'ADRM1', 5: 'CASP6', 8: 'DSG1', 7: 'DSG3', 21: 'MAGED1', 24: 'PLEC', 14: 'PSMC3', 13: 'PSMC5', 10: 'TICAM1', 20: 'PF4', 6: 'VWF', 9: 'ATP1B2', 23: 'ITGAX', 22: 'NOS1'}
 
